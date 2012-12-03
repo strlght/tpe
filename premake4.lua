@@ -3,10 +3,9 @@ solution "tpe"
 
 	project "tpe"
 		language "C++"
-		kind "WindowedApp"
+		kind "SharedLib"
 		files { "src/**.cpp" }
 		includedirs { "include" }
-		links { "sfml-system", "sfml-window", "sfml-graphics"}
 		buildoptions { "-w", "-std=c++11" }
 
 		configuration { "Debug" }
