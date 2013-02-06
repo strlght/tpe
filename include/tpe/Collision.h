@@ -6,14 +6,18 @@
 #include <algorithm>
 #include <glm/glm.hpp>
 #include <tpe/Body.h>
+#include <tpe/Vector.h>
 
-#ifndef max
-#define max(a,b)            (((a) > (b)) ? (a) : (b))
+#ifndef maxval
+#define maxval(a,b)            (((a) > (b)) ? (a) : (b))
 #endif
 
-#ifndef min
-#define min(a,b)            (((a) < (b)) ? (a) : (b))
+#ifndef minval
+#define minval(a,b)            (((a) < (b)) ? (a) : (b))
 #endif
+
+namespace tpe
+{
 
 class Body;
 
@@ -26,7 +30,10 @@ public:
 	glm::vec2 r2;
 	float depth;
 
+	Collision();
 	void solve(Body *b1, Body *b2);
 };
+
+}
 
 #endif

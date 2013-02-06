@@ -4,10 +4,15 @@
 #include <vector>
 #include <cmath>
 #define GLM_SWIZZLE
+#define GLM_GTC_double_float
 #include <glm/glm.hpp>
+#include <glm/gtx/rotate_vector.hpp>
 #include <tpe/AABB.h>
 #include <tpe/Collision.h>
 #include <tpe/Body.h>
+
+namespace tpe
+{
 
 struct Edge
 {
@@ -25,9 +30,8 @@ public:
 
 	std::vector<Edge> edges;
 	std::vector<Edge> base_edges;
-	glm::vec2 rotation;
 	Body *body;
-	AABB *aabb;
+	AABB aabb;
 
 	Polygon(Body *body, std::vector<glm::vec2> vertices);
 	float IMoment();
@@ -39,5 +43,7 @@ public:
 	void updateAABB();
 	void updateRotation();
 };
+
+}
 
 #endif

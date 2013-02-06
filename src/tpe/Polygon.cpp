@@ -1,5 +1,8 @@
 #include <tpe/Polygon.h>
 
+namespace tpe
+{
+
 Polygon::Polygon(Body *body, std::vector<glm::vec2> vertices)
 {
 	this->body = body;
@@ -17,13 +20,13 @@ Polygon::Polygon(Body *body, std::vector<glm::vec2> vertices)
 		glm::vec2 result = second - first;
 		edge.n = glm::normalize(glm::vec2(-result.y, result.x));
 		edge.d = glm::dot(edge.n, first);
+		this->edges.push_back(edge);
 		this->base_edges.push_back(edge);
 	}
 	
 	this->body->shapes.push_back(*this);
 
 	this->updateRotation();
-
 	this->updateAABB();
 }
 
@@ -44,7 +47,7 @@ float Polygon::IMoment()
 		j += perpdot + sumdot;
 	}
 
-	return (body->mass * ti) / (6.f * j);
+	return (body->m * ti) / (6.f * j);
 }
 
 float Polygon::edgeDistance(glm::vec2 n, float d)
@@ -60,16 +63,19 @@ float Polygon::edgeDistance(glm::vec2 n, float d)
 
 int Polygon::minEdgeDistanceTo(Polygon *polygon, float &dist)
 {
-	int index = -1;
-	float min, d;
+	int index = 0;
+	float min = this->edgeDistance(polygon->edges[0].n, polygon->edges[0].d), d;
 
-	for (int i = 0; i < polygon->edges.size(); i++)
+	if (min > 0.f)
+		return -1;
+
+	for (int i = 1; i < polygon->edges.size(); i++)
 	{
 		d = this->edgeDistance(polygon->edges[i].n, polygon->edges[i].d);
 
-		if (min > 0.f)
+		if (d > 0.f)
 			return -1;
-		else if (min < d || i == 0)
+		else if (min < d)
 		{
 			min = d;
 			index = i;
@@ -100,7 +106,7 @@ void Polygon::checkIntersection(Polygon *polygon, glm::vec2 n, float d)
 			Collision collision;
 			collision.position = this->vertices[i];
 			collision.n = n;
-			collision.depth = d;
+			collision.depth = d * 0.05f;
 			collision.r1 = collision.position - this->body->position;
 			collision.r2 = collision.position - polygon->body->position;
 
@@ -111,8 +117,10 @@ void Polygon::checkIntersection(Polygon *polygon, glm::vec2 n, float d)
 			else
 				k = .5f;
 
-			this->body->position -= collision.n * (k * collision.depth);
-			polygon->body->position += collision.n * ((1 - k) * collision.depth);
+			if (!this->body->isStatic)
+				this->body->position -= collision.n * (k * collision.depth);
+			if (!polygon->body->isStatic)
+				polygon->body->position += collision.n * ((1 - k) * collision.depth);
 
 			collision.solve(this->body, polygon->body);
 		}
@@ -124,49 +132,47 @@ bool Polygon::collides(Polygon *polygon)
 	float min_dist1 = 0.f, min_dist2 = 0.f;
 
 	int min_index1 = polygon->minEdgeDistanceTo(this, min_dist1);
+	int min_index2 = this->minEdgeDistanceTo(polygon, min_dist2);
+
 	if (min_index1 == -1)
 		return false;
 
-	int min_index2 = this->minEdgeDistanceTo(polygon, min_dist2);
 	if (min_index2 == -1)
 		return false;
 
 	if (min_dist1 > min_dist2)
-		this->checkIntersection(polygon, polygon->edges[min_index1].n, min_dist1);
+		this->checkIntersection(polygon, this->edges[min_index1].n, min_dist1);
 	else
-		polygon->checkIntersection(this, this->edges[min_index2].n, min_dist2);
+		this->checkIntersection(polygon, -polygon->edges[min_index2].n, min_dist2);
 
 	return true;
 }
 
 void Polygon::updateAABB()
 {
-	if (this->aabb != NULL)
-		delete this->aabb;
-
-	this->aabb = new AABB();
-	this->aabb->x1 = this->vertices[0].x;
-	this->aabb->x2 = this->vertices[0].x;
-	this->aabb->y1 = this->vertices[0].y;
-	this->aabb->y2 = this->vertices[0].y;
+	this->aabb.x1 = this->vertices[0].x;
+	this->aabb.x2 = this->vertices[0].x;
+	this->aabb.y1 = this->vertices[0].y;
+	this->aabb.y2 = this->vertices[0].y;
 
 	for (glm::vec2 vertex : this->vertices)
 	{
-		if (vertex.x < this->aabb->x1) this->aabb->x1 = vertex.x;
-		if (vertex.x > this->aabb->x2) this->aabb->x2 = vertex.x;
-		if (vertex.y < this->aabb->y1) this->aabb->y1 = vertex.y;
-		if (vertex.y > this->aabb->y2) this->aabb->y2 = vertex.y;
+		if (vertex.x < this->aabb.x1) this->aabb.x1 = vertex.x;
+		if (vertex.x > this->aabb.x2) this->aabb.x2 = vertex.x;
+		if (vertex.y > this->aabb.y1) this->aabb.y1 = vertex.y;
+		if (vertex.y < this->aabb.y2) this->aabb.y2 = vertex.y;
 	}
 }
 
 void Polygon::updateRotation()
 {
-	this->rotation = glm::vec2((float)cos(this->body->angle), (float)sin(this->body->angle));
-
 	for (int i = 0; i < this->vertices.size(); i++)
 	{
-		this->vertices[i] = this->body->position + glm::vec2(this->base_vertices[i].x * this->rotation.x - this->base_vertices[i].y * this->rotation.y, this->base_vertices[i].x * this->rotation.y + this->base_vertices[i].y * this->rotation.x); //todo: rotation
-		this->edges[i].n = glm::vec2(this->base_edges[i].n.x * this->rotation.x - this->base_edges[i].n.y * this->rotation.y, this->base_edges[i].n.y * this->rotation.x + this->base_edges[i].n.y * this->rotation.y); //todo: rotation
+		glm::vec2 pos = glm::rotate(this->base_vertices[i], this->body->angle);
+		this->vertices[i] = this->body->position + pos;
+		this->edges[i].n = glm::rotate(this->base_edges[i].n, this->body->angle);
 		this->edges[i].d = glm::dot(this->body->position, this->edges[i].n) + this->base_edges[i].d;
 	}
+}
+
 }

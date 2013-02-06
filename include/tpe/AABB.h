@@ -1,5 +1,7 @@
 #include <glm/glm.hpp>
-#include <vector>
+
+namespace tpe
+{
 
 class AABB
 {
@@ -9,5 +11,8 @@ public:
 	float y1;
 	float y2;
 
-	bool collides(AABB *aabb);
+	AABB();
+	bool collides(AABB aabb);
 };
+
+}

@@ -6,6 +6,9 @@
 #include <glm/glm.hpp>
 #include <tpe/Polygon.h>
 
+namespace tpe
+{
+
 class Polygon;
 
 class Body
@@ -15,17 +18,20 @@ public:
 	glm::vec2 velocity;
 	float angle;
 	float angular_velocity;
-	float mass;
-	float friction;
-	float bounce;
+	float m;
+	float e;
+	float u;
 	bool isStatic;
-	float inertion;
+	float i;
 
 	std::vector<Polygon> shapes;
 
+	Body();
 	void applyImpulse(glm::vec2 impulse, glm::vec2 position);
 	bool collides(Body *body);
 	void updateRotation();
 };
+
+}
 
 #endif
