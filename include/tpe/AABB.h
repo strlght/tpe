@@ -12,6 +12,7 @@ public:
 	float y2;
 
 	AABB();
+	AABB(float x1, float y1, float x2, float y2);
 	bool collides(AABB aabb);
 };
 

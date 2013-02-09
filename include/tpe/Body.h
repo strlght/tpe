@@ -19,14 +19,14 @@ public:
 	float angle;
 	float angular_velocity;
 	float m;
+	float i;
 	float e;
 	float u;
 	bool isStatic;
-	float i;
 
 	std::vector<Polygon> shapes;
 
-	Body();
+	Body(glm::vec2 position, float m, float u, float e, bool isStatic);
 	void applyImpulse(glm::vec2 impulse, glm::vec2 position);
 	bool collides(Body *body);
 	void updateRotation();

@@ -8,7 +8,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 #include <tpe/AABB.h>
-#include <tpe/Collision.h>
+#include <tpe/Solver.h>
 #include <tpe/Body.h>
 #include <tpe/Vector.h>
 

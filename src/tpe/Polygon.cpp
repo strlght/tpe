@@ -33,13 +33,12 @@ Polygon::Polygon(Body *body, std::vector<glm::vec2> vertices)
 float Polygon::IMoment()
 {
 	float ti = 0, j = 0;
-	first, second;
 
 	for (int i = 0; i < this->vertices.size(); i++)
 	{
 		glm::vec2 first = this->base_vertices[i], second = this->base_vertices[(i + 1) % this->vertices.size()];
 
-		float perpdot = glm::dot(second, perp(first));
+		float perpdot = - glm::dot(second, perp(first));
 		float sumdot = glm::dot(first, second) + glm::dot(first, first) + glm::dot(second, second);
 
 		ti += perpdot * sumdot;
@@ -102,12 +101,11 @@ void Polygon::checkIntersection(Polygon *polygon, glm::vec2 n, float d)
 	{
 		if (polygon->containsPoint(this->vertices[i]))
 		{
-			Collision collision;
-			collision.position = this->vertices[i];
-			collision.n = n;
-			collision.depth = d * 0.05f;
-			collision.r1 = collision.position - this->body->position;
-			collision.r2 = collision.position - polygon->body->position;
+			Solver collision(this->vertices[i],
+					n,
+					d * 0.05f,
+					this->vertices[i] - this->body->position,
+					this->vertices[i] - polygon->body->position);
 
 			if (this->body->isStatic)
 				k = 0.f;
@@ -117,9 +115,9 @@ void Polygon::checkIntersection(Polygon *polygon, glm::vec2 n, float d)
 				k = .5f;
 
 			if (!this->body->isStatic)
-				this->body->position -= collision.n * (k * collision.depth);
+				this->body->position -= n * (k * collision.depth);
 			if (!polygon->body->isStatic)
-				polygon->body->position += collision.n * ((1 - k) * collision.depth);
+				polygon->body->position += n * ((1 - k) * collision.depth);
 
 			collision.solve(this->body, polygon->body);
 		}

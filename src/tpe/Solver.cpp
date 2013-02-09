@@ -1,14 +1,18 @@
-#include <tpe/Collision.h>
+#include <tpe/Solver.h>
 
 namespace tpe
 {
 
-Collision::Collision()
+Solver::Solver(glm::vec2 position, glm::vec2 n, float depth, glm::vec2 r1, glm::vec2 r2)
 {
-
+	this->position = position;
+	this->n = n;
+	this->depth = depth;
+	this->r1 = r1;
+	this->r2 = r2;
 }
 
-void Collision::solve(Body *b1, Body *b2)
+void Solver::solve(Body *b1, Body *b2)
 {
 	float m1, m2, i1, i2; // mass and inertion of both bodies
 	

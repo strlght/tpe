@@ -1,5 +1,5 @@
-#ifndef COLLISION_H
-#define COLLISION_H
+#ifndef SOLVER_H
+#define SOLVER_H
 
 #include <vector>
 #include <cmath>
@@ -21,16 +21,17 @@ namespace tpe
 
 class Body;
 
-class Collision
+class Solver 
 {
-public:
+private:
 	glm::vec2 position;
 	glm::vec2 n;
 	glm::vec2 r1;
 	glm::vec2 r2;
+public:
 	float depth;
 
-	Collision();
+	Solver(glm::vec2 position, glm::vec2 n, float depth, glm::vec2 r1, glm::vec2 r2);
 	void solve(Body *b1, Body *b2);
 };
 
