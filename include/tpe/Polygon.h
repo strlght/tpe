@@ -10,6 +10,7 @@
 #include <tpe/AABB.h>
 #include <tpe/Collision.h>
 #include <tpe/Body.h>
+#include <tpe/Vector.h>
 
 namespace tpe
 {

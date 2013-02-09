@@ -16,9 +16,9 @@ Polygon::Polygon(Body *body, std::vector<glm::vec2> vertices)
 	for (int i = 0; i < this->vertices.size(); i++)
 	{
 		Edge edge;
-		glm::vec2 first = this->vertices[i % this->vertices.size()], second = this->vertices[(i + 1) % this->vertices.size()];
+		glm::vec2 first = this->vertices[i], second = this->vertices[(i + 1) % this->vertices.size()];
 		glm::vec2 result = second - first;
-		edge.n = glm::normalize(glm::vec2(-result.y, result.x));
+		edge.n = glm::normalize(perp(result));
 		edge.d = glm::dot(edge.n, first);
 		this->edges.push_back(edge);
 		this->base_edges.push_back(edge);
@@ -33,12 +33,11 @@ Polygon::Polygon(Body *body, std::vector<glm::vec2> vertices)
 float Polygon::IMoment()
 {
 	float ti = 0, j = 0;
-	glm::vec2 first, second;
+	first, second;
 
 	for (int i = 0; i < this->vertices.size(); i++)
 	{
-		first = this->base_vertices[i];
-		second = this->base_vertices[(i + 1) % this->vertices.size()];
+		glm::vec2 first = this->base_vertices[i], second = this->base_vertices[(i + 1) % this->vertices.size()];
 
 		float perpdot = (second.x * first.y) - (first.x * second.y);
 		float sumdot = glm::dot(first, second) + glm::dot(first, first) + glm::dot(second, second);
