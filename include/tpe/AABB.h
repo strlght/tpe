@@ -1,3 +1,6 @@
+#ifndef AABB_H
+#define AABB_H
+
 #include <glm/glm.hpp>
 
 namespace tpe
@@ -17,3 +20,5 @@ public:
 };
 
 }
+
+#endif

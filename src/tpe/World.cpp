@@ -3,9 +3,15 @@
 namespace tpe
 {
 
-World::World()
+World::World(float depth)
 {
-	this->depth = 0.1f;
+	this->depth = depth;
+}
+
+void World::addBody(Body* body)
+{
+	body->world = this;
+	this->bodies.push_back(body);
 }
 
 void World::step(float t, int iterations)

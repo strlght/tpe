@@ -4,12 +4,14 @@
 #include <vector>
 #define GLM_SWIZZLE
 #include <glm/glm.hpp>
+#include <tpe/World.h>
 #include <tpe/Polygon.h>
 
 namespace tpe
 {
 
 class Polygon;
+class World;
 
 class Body
 {
@@ -25,6 +27,7 @@ public:
 	bool isStatic;
 
 	std::vector<Polygon> shapes;
+	World* world;
 
 	Body(glm::vec2 position, float m, float u, float e, bool isStatic);
 	void applyImpulse(glm::vec2 impulse, glm::vec2 position);

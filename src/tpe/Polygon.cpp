@@ -101,9 +101,10 @@ void Polygon::checkIntersection(Polygon *polygon, glm::vec2 n, float d)
 	{
 		if (polygon->containsPoint(this->vertices[i]))
 		{
+			float depth = d * this->body->world->depth;
 			Solver collision(this->vertices[i],
 					n,
-					d * 0.05f,
+					depth,
 					this->vertices[i] - this->body->position,
 					this->vertices[i] - polygon->body->position);
 
@@ -115,9 +116,9 @@ void Polygon::checkIntersection(Polygon *polygon, glm::vec2 n, float d)
 				k = .5f;
 
 			if (!this->body->isStatic)
-				this->body->position -= n * (k * collision.depth);
+				this->body->position -= n * (k * depth);
 			if (!polygon->body->isStatic)
-				polygon->body->position += n * ((1 - k) * collision.depth);
+				polygon->body->position += n * ((1 - k) * depth);
 
 			collision.solve(this->body, polygon->body);
 		}
