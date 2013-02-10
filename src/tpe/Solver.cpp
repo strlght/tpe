@@ -4,12 +4,8 @@ namespace tpe
 {
 
 Solver::Solver(glm::vec2 position, glm::vec2 n, float depth, glm::vec2 r1, glm::vec2 r2)
+	: position(position), n(n), r1(r1), r2(r2), depth(depth)
 {
-	this->position = position;
-	this->n = n;
-	this->depth = depth;
-	this->r1 = r1;
-	this->r2 = r2;
 }
 
 void Solver::solve(Body *b1, Body *b2)

@@ -3,10 +3,9 @@
 namespace tpe
 {
 
-Polygon::Polygon(Body *body, std::vector<glm::vec2> vertices)
+Polygon::Polygon(Body *body, std::vector<glm::vec2> vertices) : vertices(),
+	base_vertices(), edges(), base_edges(), body(body), aabb()
 {
-	this->body = body;
-
 	for (glm::vec2 vert : vertices)
 	{
 		this->vertices.push_back(vert);

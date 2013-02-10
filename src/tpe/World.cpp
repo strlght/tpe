@@ -3,9 +3,8 @@
 namespace tpe
 {
 
-World::World(float depth)
+World::World(float depth) : depth(depth), gravity(0, 0), bodies()
 {
-	this->depth = depth;
 }
 
 void World::addBody(Body* body)

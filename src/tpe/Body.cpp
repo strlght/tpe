@@ -3,13 +3,10 @@
 namespace tpe
 {
 
-Body::Body(glm::vec2 position, float m, float u, float e, bool isStatic)
+Body::Body(glm::vec2 position, float m, float u, float e, bool isStatic) :
+	position(position), velocity(0, 0), angle(0), angular_velocity(0), m(m),
+	i(0), e(e), u(u), isStatic(isStatic)
 {
-	this->position = position;
-	this->m = m;
-	this->u = u;
-	this->e = e;
-	this->isStatic = isStatic;
 }
 
 void Body::applyImpulse(glm::vec2 impulse, glm::vec2 position)
