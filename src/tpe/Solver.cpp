@@ -49,8 +49,8 @@ void Solver::solve(Body *b1, Body *b2)
 
 	float bounce = glm::dot(n, vr) * e;
 	float mass = 1.f / m1 + 1.f / m2;
-	float r1n = glm::dot(r1, -perp(n));
-	float r2n = glm::dot(r2, -perp(n));
+	float r1n = perpdot(r1, n);
+	float r2n = perpdot(r2, n);
 
 	float kn = mass + pow(r1n, 2) / i1 + pow(r2n, 2) / i2;
 	float nMass = 1.f / kn;
@@ -61,8 +61,8 @@ void Solver::solve(Body *b1, Body *b2)
 
 	float vrt = glm::dot(vr, t);
 
-	float r1t = glm::dot(r1, -perp(t));
-	float r2t = glm::dot(r1, -perp(t));
+	float r1t = perpdot(r1, t);
+	float r2t = perpdot(r1, t);
 
 	float kt = mass + pow(r1t, 2) / i1 + pow(r2t, 2) / i2;
 	float tMass = 1.f / kt;

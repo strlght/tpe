@@ -17,7 +17,7 @@ void Body::applyImpulse(glm::vec2 impulse, glm::vec2 position)
 	if (this->isStatic)
 		return;
 	this->velocity += (impulse / this->m);
-	this->angular_velocity += (- glm::dot(position, perp(impulse)) / this->i);
+	this->angular_velocity += (perpdot(position, impulse) / this->i);
 }
 
 bool Body::collides(Body *body)
