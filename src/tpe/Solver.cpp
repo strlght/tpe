@@ -38,8 +38,8 @@ void Solver::solve(Body *b1, Body *b2)
 		i2 = b2->i;
 	}
 
-	float e = (b1->e + b2->e) / 2.f;
-	float u = (b1->u + b2->u) / 2.f;
+	float e = b1->e * b2->e;
+	float u = b1->u * b2->u;
 
 	glm::vec2 vel1 = b1->velocity + b1->angular_velocity * perp(r1);
 	glm::vec2 vel2 = b2->velocity + b2->angular_velocity * perp(r2);
@@ -55,7 +55,7 @@ void Solver::solve(Body *b1, Body *b2)
 	float kn = mass + pow(r1n, 2) / i1 + pow(r2n, 2) / i2;
 	float nMass = 1.f / kn;
 	
-	float jn = maxval(-(bounce + vrn) * nMass, 0.f);
+	float jn = - (bounce + vrn) * nMass;
 
 	glm::vec2 t = perp(n);
 

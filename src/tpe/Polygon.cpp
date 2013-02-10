@@ -39,10 +39,10 @@ float Polygon::IMoment()
 		glm::vec2 first = this->base_vertices[i], second = this->base_vertices[(i + 1) % this->vertices.size()];
 
 		float pd = perpdot(second, first);
-		float sumdot = glm::dot(first, second) + glm::dot(first, first) + glm::dot(second, second);
+		float sd = glm::dot(first, second) + glm::dot(first, first) + glm::dot(second, second);
 
-		ti += pd * sumdot;
-		j += pd + sumdot;
+		ti += pd * sd;
+		j += pd;
 	}
 
 	return (body->m * ti) / (6.f * j);
